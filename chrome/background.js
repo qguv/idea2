@@ -1,5 +1,4 @@
 API_URL = "http://idea2.api.inthis.space";
-BLOCKING = false;
 
 function chrome_update_lists() {
 	if (!chrome_is_logged_in()) { return; }
@@ -9,10 +8,6 @@ function chrome_update_lists() {
 function chrome_save_lists(lists) {
 	chrome.storage.sync.set({"lists": lists});
 	// TODO: use globals and access with chrome.extension.getBackgroundPage() 
-}
-
-function chrome_is_logged_in() {
-	return (typeof chrome_username() !== "undefined");
 }
 
 function api_lists(user, callback) {

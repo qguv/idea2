@@ -5,3 +5,6 @@ function chrome_username() {
 	});
 }
 
+function chrome_is_logged_in() {
+	return (typeof chrome_username() !== "undefined");
+}
