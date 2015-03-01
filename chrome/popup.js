@@ -38,6 +38,9 @@ function open_list(user, listname) {
 	chrome_open_tab_urls(api_links(user, listname));
 }
 
-chrome.storage.onChanged.addListener(function() { jq_load(); });
+chrome.storage.onChanged.addListener(function() { 
+	chrome.browserAction.setIcon({'path': 'icon_notification.png'});
+	jq_load(); 
+});
 
 chrome.browserAction.setIcon({'path': 'icon.png'});
