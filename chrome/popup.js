@@ -24,6 +24,7 @@ function open_list(user, listname) {
 
 function chrome_log_out() {
 	chrome.storage.sync.clear();
+	location.reload();
 }
 
 function chrome_log_in(username) {
@@ -43,12 +44,13 @@ function jq_load() {
 	var zeroth_list = $("div.list");
 	if (!chrome_is_logged_in()) {
 		chrome_log_in(prompt("Please log in to idea2. Choose a username:", "tswift"));
-		return;
 	}
 	var username = chrome_username();
 
-	$("div.credentials").show();
-	$("div.share").show();
+	//$("div.credentials").removeClass("hidden");
+	$("div.credentials").click(function() { alert("Handled."); });
+	//$("a.credentials").click(function() { chrome_log_out(); });
+	$("div.share").removeClass("hidden");
 
 	var lists = chrome_get_lists();
 	if (typeof lists === "undefined") { return; }
@@ -63,6 +65,8 @@ function jq_load() {
 		insertAfter("div.credentials");
 	});
 }
+
+jq_load();
 
 chrome.storage.onChanged.addListener(function() { 
 	chrome.browserAction.setIcon({'path': 'icon_notification.png'});
