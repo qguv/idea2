@@ -6,9 +6,9 @@ function send_tabs(target_user) {
 	});
 }
 
-function open_tabs(tabs) {
+function open_tabs(tab_urls) {
 	for (var i = 0; i < tabs.length; i++) {
-		chrome.tabs.create({"url": tabs[i]});
+		chrome.tabs.create({"url": tab_urls[i]});
 	}
 }
 
