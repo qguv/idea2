@@ -54,7 +54,7 @@ def newlist(user, listname, links):
     return "Okay! New list for user {} with name {} looks like {}.".format(user, listname, store.lrange(listkey(user, listname), 0, -1))
 
 def lists(user):
-    return dumps(store.lrange(user, 0, -1))
+    return dumps({"lists": store.lrange(user, 0, -1)})
 
 def rmlist(user, listname):
     
@@ -75,7 +75,7 @@ def mvlist(user, listname, rename):
     return "Okay! {} is now at {}, still under user {}.".format(listname, rename, user)
 
 def links(user, listname):
-    return dumps(store.lrange(listkey(user, listname), 0, -1))
+    return dumps({"links": store.lrange(listkey(user, listname), 0, -1)})
 
 def listkey(*pieces):
     return ':'.join(pieces)
