@@ -1,28 +1,25 @@
-API_URL = "http://idea2.api.inthis.space"
+API_URL = "http://idea2.api.inthis.space";
+BLOCKING = false;
 
-function send_tabs(target_user) {
-	chrome.tabs.query({"currentWindow": true}, function(result) {
-		// jquery send the tabs
+function chrome_update_lists() {
+	if (!chrome_is_logged_in()) { return; }
+	api_lists(chrome_username(), function(lists) { chrome_save_lists(lists) });
+}
+
+function chrome_save_lists(lists) {
+	chrome.storage.sync.set({"lists": lists});
+	// TODO: use globals and access with chrome.extension.getBackgroundPage() 
+}
+
+function chrome_is_logged_in() {
+	return (typeof chrome_username() !== "undefined");
+}
+
+function api_lists(user, callback) {
+	$.get(API_URL + '/u/' + user, {}, function(page) {
+		if (typeof page === "undefined") { return; }
+		callback(page.lists);
 	});
-}
-
-function open_tabs(tab_urls) {
-	for (var i = 0; i < tab_urls.length; i++) {
-		chrome.tabs.create({"url": tab_urls[i].url});
-	}
-}
-
-function query_tabs() {
-	// check the db
-	// if new stuff is on the server, show it
-}
-
-function api_newlist(user, listname, links) {
-	$.post(API_URL + '/u/' + user, {'name': listname, 'links': JSON.stringify(links)});
-}
-
-function api_lists(user) {
-	$.get(API_URL + '/u/' + user, {}, jq_populatelists(ret));
 }
 
 function api_rmlist(user, listname) {
@@ -36,13 +33,12 @@ function api_mvlist(user, listname, rename) {
 	$.post(API_URL + '/u/' + user + '/' + listname, {'rename': rename});
 }
 
-function api_links(user, listname) {
-	$.get(API_URL + '/u/' + user + '/' + listname);
-}
-
-function jq_populatelists(ret) {
-	// do some dumb web dev shit here
+function api_links(user, listname, callback) {
+	$.get(API_URL + '/u/' + user + '/' + listname, function(page) {
+		if (typeof page === "undefined") { return; }
+		callback(page.links);
+	});
 }
 
 // check the db every 5s
-setInterval(function() {query_tabs();}, 5000);
+setInterval(function() { if !blocking query_tabs(); }, 5000);
