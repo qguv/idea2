@@ -1,3 +1,5 @@
+API_URL = "http://idea2.api.inthis.space"
+
 function send_tabs(target_user) {
 	chrome.tabs.query({"currentWindow": true}, function(result) {
 		// jquery send the tabs
@@ -15,33 +17,32 @@ function query_tabs() {
 	// if new stuff is on the server, show it
 }
 
-setInterval(function() { // check the db every 5s
-	query_tabs();
-}, 5000);
-
 function api_newlist(user, listname, links) {
-	$.post('/u/'+user, {'name': listname, 'links': JSON.stringify(links)});
+	$.post(API_URL + '/u/' + user, {'name': listname, 'links': JSON.stringify(links)});
 }
 
 function api_lists(user) {
-	$.get('/u/' + user, {}, jq_populatelists(ret));
+	$.get(API_URL + '/u/' + user, {}, jq_populatelists(ret));
 }
 
 function api_rmlist(user, listname) {
 	$.ajax({
-		url: '/u/' + user + '/' + listname,
+		url: API_URL + '/u/' + user + '/' + listname,
 		type: 'DELETE'
 	});
 }
 
 function api_mvlist(user, listname, rename) {
-	$.post('/u/'+user+'/'+listname, {'rename': rename});
+	$.post(API_URL + '/u/' + user + '/' + listname, {'rename': rename});
 }
 
 function api_links(user, listname) {
-	$.get('/u/' + user + '/' + listname);
+	$.get(API_URL + '/u/' + user + '/' + listname);
 }
 
 function jq_populatelists(ret) {
 	// do some dumb web dev shit here
 }
+
+// check the db every 5s
+setInterval(function() {query_tabs();}, 5000);
