@@ -39,3 +39,5 @@ function open_list(user, listname) {
 }
 
 chrome.storage.onChanged.addListener(function() { jq_load(); });
+
+chrome.browserAction.setIcon({'path': 'icon.png'});
