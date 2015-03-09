@@ -66,9 +66,7 @@ function jq_load() {
 	});
 }
 
-jq_load();
-
-chrome.storage.onChanged.addListener(function() { 
-	chrome.browserAction.setIcon({'path': 'icon_notification.png'});
-	jq_load(); 
+//chrome.storage.onChanged.addListener(function(changes) {
+$(document).ready(function() {
+	jq_load();
 });

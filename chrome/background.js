@@ -36,4 +36,4 @@ function api_links(user, listname, callback) {
 }
 
 // check the db every 5s
-setInterval(function() { if !blocking query_tabs(); }, 5000);
+setInterval(chrome_update_lists, 5000);
