@@ -1,5 +1,3 @@
-API_URL = "http://idea2.api.inthis.space";
-
 function send_tabs() {
 	var listname = prompt("Name your tab list:");
 	var to_user = prompt("Send to whom?");
