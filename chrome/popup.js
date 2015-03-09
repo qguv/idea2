@@ -19,7 +19,10 @@ function chrome_open_tab_urls(tab_urls) {
 }
 
 function open_list(user, listname) {
-	chrome_open_tab_urls(api_links(user, listname));
+	//chrome.browserAction.setIcon({'path': 'icon.png'});
+	api_links(user, listname, function(links, ok) {
+		if (typeof links !== "undefined") { chrome_open_tab_urls(links); }
+	});
 }
 
 function chrome_log_out() {
@@ -39,30 +42,40 @@ function chrome_get_lists() {
 }
 
 function jq_load() {
-	chrome.browserAction.setIcon({"path": "icon.png"});
+	//chrome.browserAction.setIcon({"path": "icon.png"});
+
+	$('input.username').keyup(function(ev) {
+		// if return is pressed in the input field
+		username = $(this).val();
+		if ((ev.which == 13) && (username !== '')) {
+			console.log("Return pressed.");
+			chrome_log_in(username);
+			jq_load();
+		}
+	});
 
 	var zeroth_list = $("div.list");
-	if (!chrome_is_logged_in()) {
-		chrome_log_in(prompt("Please log in to idea2. Choose a username:", "tswift"));
-	}
-	var username = chrome_username();
 
-	//$("div.credentials").removeClass("hidden");
-	$("div.credentials").click(function() { alert("Handled."); });
-	//$("a.credentials").click(function() { chrome_log_out(); });
-	$("div.share").removeClass("hidden");
+	chrome_username(function(username, is_logged_in) {
+		if (!is_logged_in) { return; }
 
-	var lists = chrome_get_lists();
-	if (typeof lists === "undefined") { return; }
-	zeroth_list.hide();
+		$('input').hide();
+		$("div.share").show();
+		$("div.credentials").show();
+		$("a.credentials").click(function() { chrome_log_out(); });
 
-	var generic_list = first_list.clone();
-	generic_list("div.buttons").show();
+		var lists = chrome_get_lists();
+		if (typeof lists === "undefined") { return; }
+		zeroth_list.hide();
 
-	lists.forEach(function(list) {
-		var thisone = generic_list.clone();
-		thisone("a.name").text(list).click(function() { open_list(username, list); });
-		insertAfter("div.credentials");
+		var generic_list = first_list.clone();
+		generic_list("div.buttons").show();
+
+		lists.forEach(function(list) {
+			var thisone = generic_list.clone();
+			thisone("a.name").text(list).click(function() { open_list(username, list); });
+			insertAfter("div.credentials");
+		});
 	});
 }
 

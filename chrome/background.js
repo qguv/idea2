@@ -1,8 +1,13 @@
 API_URL = "http://idea2.api.inthis.space";
 
 function chrome_update_lists() {
-	if (!chrome_is_logged_in()) { return; }
-	api_lists(chrome_username(), function(lists) { chrome_save_lists(lists) });
+	chrome_username(function(username, is_logged_in) {
+		if (is_logged_in) {
+			api_lists(username, function(lists) {
+				chrome_save_lists(lists)
+			});
+		}
+	});
 }
 
 function chrome_save_lists(lists) {
@@ -10,10 +15,14 @@ function chrome_save_lists(lists) {
 	// TODO: use globals and access with chrome.extension.getBackgroundPage() 
 }
 
+// callback: function(links, ok)
 function api_lists(user, callback) {
 	$.get(API_URL + '/u/' + user, {}, function(page) {
-		if (typeof page === "undefined") { return; }
-		callback(page.lists);
+		if (typeof page === "undefined") {
+			callback(page, false);
+		} else {
+			callback(page.lists, (typeof page.lists !== "undefined"));
+		}
 	});
 }
 
@@ -28,10 +37,14 @@ function api_mvlist(user, listname, rename) {
 	$.post(API_URL + '/u/' + user + '/' + listname, {'rename': rename});
 }
 
+// callback: function(links, ok)
 function api_links(user, listname, callback) {
 	$.get(API_URL + '/u/' + user + '/' + listname, function(page) {
-		if (typeof page === "undefined") { return; }
-		callback(page.links);
+		if (typeof page === "undefined") {
+			callback(page, false);
+		} else {
+			callback(page.links, (typeof page.links !== "undefined"));
+		}
 	});
 }
 
