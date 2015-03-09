@@ -32,6 +32,9 @@
         border-top: 1px solid rgba(0, 0, 0, 0.1);
         border-bottom: 1px solid rgba(255, 255, 255, 0.3);
       }
+      input {
+        float: right;
+      }
 
       /* TEXT STYLING */
 
@@ -80,11 +83,13 @@
   </head>
   <body>
     <a class="little">idea2 Shared Tab Groups:</a>
-    <div class="credentials">
+    <div class="hidden credentials">
       <a class="little sc button credentials">Log out</a>
     </div>
-    <div class="share">
-      <a class="hidden little sc button share">Share tabs</a>
+    <input class="username" placeholder="username"/>
+
+    <div class="hidden share">
+      <a class="little sc button share">Share tabs</a>
     </div>
     <hr class="fancyline"/>
     <div class="list">
