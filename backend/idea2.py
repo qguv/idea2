@@ -20,8 +20,8 @@ def user_route(user):
         return lists(user)
 
     # POST
-    listname = request.headers["name"]
-    links = loads(request.headers["links"])
+    listname = request.form["name"]
+    links = loads(request.form["links"])
     return newlist(user, listname, links)
 
 @app.route("/u/<user>/<listname>", methods=["GET", "POST", "DELETE"])
