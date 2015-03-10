@@ -30,10 +30,11 @@ function chrome_log_in(username) {
 	chrome.storage.sync.set({"username": username});
 }
 
-function chrome_get_lists() {
+// callback: function(lists, ok)
+function chrome_get_lists(callback) {
 	chrome.storage.sync.get("lists", function(items) {
-		if (typeof items === "undefined") { return; }
-		return items.lists;
+		if (typeof items === "undefined") { callback(items, false); }
+		callback(items.lists, (typeof items.lists !== "undefined"));
 	});
 }
 
@@ -57,9 +58,8 @@ function jq_load() {
 		// if return is pressed in the input field
 		username = $(this).val();
 		if ((ev.which == 13) && (username !== '')) {
-			console.log("Return pressed.");
 			chrome_log_in(username);
-			jq_load();
+			location.reload();
 		}
 	});
 
@@ -67,6 +67,7 @@ function jq_load() {
 
 	chrome_username(function(username, is_logged_in) {
 		if (!is_logged_in) { return; }
+		console.log("Logged in as", username + ".");
 
 		$("input#username").hide();
 		$("div#log-out").show();
@@ -74,17 +75,20 @@ function jq_load() {
 		$("div#share-tabs").show();
 		$("div#share-tabs").click(function() { jq_form_visibility(true) });
 
-		var lists = chrome_get_lists();
-		if (typeof lists === "undefined") { return; }
-		zeroth_list.hide();
+		chrome_get_lists(function(lists, ok) {
+			if (!ok) { return; }
+			console.log("Got lists:", lists);
+			$(zeroth_list).hide();
 
-		var generic_list = first_list.clone();
-		generic_list("div.buttons").show();
+			var generic_list = $(zeroth_list).clone();
+			$(generic_list).find("div.listbuttons").show();
 
-		lists.forEach(function(list) {
-			var thisone = generic_list.clone();
-			thisone("a.name").text(list).click(function() { open_list(username, list); });
-			insertAfter("div.credentials");
+			lists.forEach(function(list) {
+				var thisone = $(generic_list).clone();
+				$(thisone).find("a.name").text(list);
+				$(thisone).click(function() { open_list(username, list); })
+				$(thisone).insertAfter("hr.fancyline").show();
+			});
 		});
 	});
 }
