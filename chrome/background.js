@@ -1,5 +1,3 @@
-API_URL = "http://idea2.api.inthis.space";
-
 function chrome_update_lists() {
 	chrome_username(function(username, is_logged_in) {
 		if (is_logged_in) {
