@@ -106,37 +106,54 @@ function jq_load() {
 		}
 	});
 
-	var zeroth_list = $("div.list");
-
 	chrome_username(function(username, is_logged_in) {
-		if (!is_logged_in) { return; }
+		if (!is_logged_in) {
+			$("input#username").show();
+			$("div#logged-in-buttons").hide();
+			return;
+		}
 		console.log("Logged in as", username + ".");
 
-		$("input#username").hide();
-		$("div#logged-in-buttons").show();
 		$("a.log-out").click(chrome_log_out);
 		$("a.share-tabs").click(function() { jq_form_visibility(true); });
 
 		chrome_get_lists(function(lists, ok, empty) {
-			if (!ok || empty) { return; }
-			console.log("Got lists:", lists);
-			$(zeroth_list).hide();
+			var none = (!ok || empty);
+			jq_populate(username, lists, none);
+		});
+	});
+}
 
-			var generic_list = $(zeroth_list).clone();
-			$(generic_list).find("div.listbuttons").show();
+function jq_populate(username, lists, none) {
+	var zeroth_list = $("div.list");
 
-			lists.forEach(function(list) {
-				var thisone = $(generic_list).clone().insertAfter("hr.fancyline").show();
-				$(thisone).find("a.name").text(list).click(function() { open_list(username, list); })
-				$(thisone).find("a.rename").click(function() { alert("Not implemented yet!"); });
-				$(thisone).find("a.delete").click(function() {
-					$(thisone).find("a.rename").hide();
-					$(this).text("Deleting...");
-					api_rmlist(username, list, function() {
-						chrome_update_lists(function() {
-							location.reload();
-						});
-					});
+	if (none) {
+		zeroth_list.show();
+		return;
+	}
+	console.log("Got lists:", lists);
+
+	var generic_list = $(zeroth_list).clone();
+	$(generic_list).find("div.listbuttons").show();
+
+	$("div#lists").empty();
+
+	lists.forEach(function(list) {
+		var thisone = $(generic_list).clone().appendTo("div#lists").show();
+		$(thisone).find("a.name").text(list).click(function() { open_list(username, list); })
+		$(thisone).find("a.rename").click(function() {
+			var ren = this;
+			$(ren).text("v1.0...");
+			setTimeout(function() {
+				$(ren).text("Rename");
+			}, 2000);
+		});
+		$(thisone).find("a.delete").click(function() {
+			$(thisone).find("a.rename").hide();
+			$(this).text("Deleting...");
+			api_rmlist(username, list, function() {
+				chrome_update_lists(function() {
+					location.reload();
 				});
 			});
 		});
@@ -145,5 +162,15 @@ function jq_load() {
 
 //chrome.storage.onChanged.addListener(function(changes) {
 $(document).ready(function() {
+
+	// quick load from cache
 	jq_load();
+
+	// update from server (slow)
+	chrome_update_lists(function() {
+
+		// overwrite current lists with updated lists from server
+		jq_load();
+
+	});
 });

@@ -6,6 +6,7 @@
 
       body {
         width: 300px;
+        height: 350px;
         font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
         font-size: 100%;
         overflow: hidden;
@@ -83,20 +84,22 @@
 
     <a class="little">idea2 Shared Tab Groups:</a>
 
-    <div id="logged-in-buttons" class="hidden top-button">
+    <div id="logged-in-buttons" class="top-button">
       <a class="little sc button share-tabs">Share tabs</a>
       <a class="little sc button log-out">Log out</a>
     </div>
 
-    <input id="username" class="float-right" placeholder="Username"/>
+    <input id="username" class="hidden float-right" placeholder="Username"/>
 
     <hr class="fancyline"/>
 
-    <div class="list">
-      <a class="name">No Lists Yet!</a>
-      <div class="hidden float-right listbuttons">
-        <a class="little sc button rename">Rename</a>
-        <a class="little sc button delete">Delete</a>
+    <div id="lists">
+      <div class="hidden list">
+        <a class="name">No Lists Yet!</a>
+        <div class="hidden float-right listbuttons">
+          <a class="little sc button rename">Rename</a>
+          <a class="little sc button delete">Delete</a>
+        </div>
       </div>
     </div>
 
