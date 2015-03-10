@@ -129,6 +129,7 @@ function jq_load() {
 		if (!is_logged_in) {
 			$("input#username").show();
 			$("div#logged-in-buttons").hide();
+			$("div.prototype").text("Not logged in.").show();
 			return;
 		}
 		console.log("Logged in as", username + ".");
