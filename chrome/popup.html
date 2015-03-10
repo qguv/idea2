@@ -57,13 +57,13 @@
         border-radius: 3px;
         padding: .2em .4em;
       }
-      a.credentials {
+      a.log-out {
         background-color: #2c2;
       }
-      a.rename, a.share {
+      a.rename, a.share-tabs, a.submit-share-tabs {
         background-color: #0bf;
       }
-      a.delete {
+      a.delete, a.cancel-share-tabs {
         background-color: #f33;
       }
     </style>
@@ -83,15 +83,12 @@
 
     <a class="little">idea2 Shared Tab Groups:</a>
 
-    <div id="log-out" class="hidden top-button">
-      <a class="little sc button credentials">Log out</a>
+    <div id="logged-in-buttons" class="hidden top-button">
+      <a class="little sc button share-tabs">Share tabs</a>
+      <a class="little sc button log-out">Log out</a>
     </div>
 
     <input id="username" class="float-right" placeholder="Username"/>
-
-    <div id="share-tabs" class="hidden top-button">
-      <a class="little sc button share">Share tabs</a>
-    </div>
 
     <hr class="fancyline"/>
 
@@ -106,7 +103,10 @@
     <div class="hidden share-form">
       <input id="target_user" placeholder="Destination user"/>
       <input id="list_name" placeholder="List name"/>
-      <button type="button" class="float-right">Share</button>
+      <div class="float-right">
+        <a class="little sc button cancel-share-tabs">Cancel</a>
+        <a class="little sc button submit-share-tabs">Share</a>
+      </div>
     </div>
 
   </body>
