@@ -2,7 +2,7 @@ function send_tabs() {
 	var listname = prompt("Name your tab list:");
 	var to_user = prompt("Send to whom?");
 	chrome.tabs.query({"currentWindow": true}, function(tabs) {
-		api_newlist(target_user, listname, tabs.map(function() { return this.url; }));
+		api_newlist(to_user, listname, tabs.map(function() { return this.url; }));
 	});
 }
 
@@ -42,7 +42,7 @@ function chrome_get_lists() {
 function jq_load() {
 	//chrome.browserAction.setIcon({"path": "icon.png"});
 
-	$('input.username').keyup(function(ev) {
+	$('input').keyup(function(ev) {
 		// if return is pressed in the input field
 		username = $(this).val();
 		if ((ev.which == 13) && (username !== '')) {
@@ -58,9 +58,10 @@ function jq_load() {
 		if (!is_logged_in) { return; }
 
 		$('input').hide();
-		$("div.share").show();
-		$("div.credentials").show();
-		$("a.credentials").click(function() { chrome_log_out(); });
+		$("div#log-out").show();
+		$("div#log-out").click(chrome_log_out);
+		$("div#share-tabs").show();
+		$("div#share-tabs").click(send_tabs);
 
 		var lists = chrome_get_lists();
 		if (typeof lists === "undefined") { return; }
