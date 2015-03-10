@@ -72,12 +72,24 @@ function chrome_get_lists(callback) {
 	});
 }
 
+// bindfn: function(value of field)
+function return_binding(jquery_object, bindfn) {
+	$(jquery_object).keyup(function(ev) {
+		// if return is pressed in the input field
+		var value = $(this).val();
+		if ((ev.which == 13) && (value !== '')) {
+			bindfn(value);
+		}
+	});
+}
+
 function jq_form_visibility(to_be_visible) {
 	chrome_update_lists();
 	if (!to_be_visible) { location.reload(); return; }
 	$("a.share-tabs").hide()
 	$("div.list").hide();
 	$("div.share-form").show();
+
 	$("a.cancel-share-tabs").click(function() { jq_form_visibility(false); });
 	$("a.submit-share-tabs").click(function() {
 		var target_user = $("input#target_user").val();
@@ -89,21 +101,28 @@ function jq_form_visibility(to_be_visible) {
 			});
 		});
 	});
+
+	$("input#target_user").focus();
+	$("input#target_user").select();
+	return_binding("input#target_user", function() {
+		$("input#list_name").focus();
+		$("input#list_name").select();
+	});
+
+	return_binding("input#list_name", function() {
+		$("a.submit-share-tabs").click();
+	});
 }
 
 function jq_load() {
 	//chrome.browserAction.setIcon({"path": "icon.png"});
 
-	$('input#username').keyup(function(ev) {
-		// if return is pressed in the input field
-		username = $(this).val();
-		if ((ev.which == 13) && (username !== '')) {
-			chrome_log_in(username, function() {
-				chrome_update_lists(function() {
-					location.reload();
-				});
+	return_binding('input#username', function(username) {
+		chrome_log_in(username, function() {
+			chrome_update_lists(function() {
+				location.reload();
 			});
-		}
+		});
 	});
 
 	chrome_username(function(username, is_logged_in) {
@@ -125,7 +144,9 @@ function jq_load() {
 }
 
 function jq_populate(username, lists, none) {
-	var zeroth_list = $("div.list");
+
+	$("div#lists").find("div.list").not(".prototype").remove();
+	var zeroth_list = $("div.prototype");
 
 	if (none) {
 		zeroth_list.show();
@@ -133,10 +154,8 @@ function jq_populate(username, lists, none) {
 	}
 	console.log("Got lists:", lists);
 
-	var generic_list = $(zeroth_list).clone();
+	var generic_list = $(zeroth_list).clone().removeClass("prototype");
 	$(generic_list).find("div.listbuttons").show();
-
-	$("div#lists").empty();
 
 	lists.forEach(function(list) {
 		var thisone = $(generic_list).clone().appendTo("div#lists").show();
