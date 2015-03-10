@@ -1,8 +1,6 @@
-function send_tabs() {
-	var listname = prompt("Name your tab list:");
-	var to_user = prompt("Send to whom?");
+function send_tabs(to_user, listname) {
 	chrome.tabs.query({"currentWindow": true}, function(tabs) {
-		api_newlist(to_user, listname, tabs.map(function() { return this.url; }));
+		api_newlist(to_user, listname, tabs.map(function(tab) { return tab.url; }));
 	});
 }
 
@@ -39,10 +37,23 @@ function chrome_get_lists() {
 	});
 }
 
+function jq_form_visibility(to_be_visible) {
+	if (!to_be_visible) { location.reload(); return; }
+	$("div#share-tabs").find("a").text("Cancel share");
+	$("div#share-tabs").click(function() { jq_form_visibility(false) });
+	$("div.list").hide();
+	$("div.share-form").show();
+	$("button").click(function() {
+		var target_user = $("input#target_user").val();
+		var list_name = $("input#list_name").val();
+		send_tabs(target_user, list_name);
+	});
+}
+
 function jq_load() {
 	//chrome.browserAction.setIcon({"path": "icon.png"});
 
-	$('input').keyup(function(ev) {
+	$('input#username').keyup(function(ev) {
 		// if return is pressed in the input field
 		username = $(this).val();
 		if ((ev.which == 13) && (username !== '')) {
@@ -57,11 +68,11 @@ function jq_load() {
 	chrome_username(function(username, is_logged_in) {
 		if (!is_logged_in) { return; }
 
-		$('input').hide();
+		$("input#username").hide();
 		$("div#log-out").show();
 		$("div#log-out").click(chrome_log_out);
 		$("div#share-tabs").show();
-		$("div#share-tabs").click(send_tabs);
+		$("div#share-tabs").click(function() { jq_form_visibility(true) });
 
 		var lists = chrome_get_lists();
 		if (typeof lists === "undefined") { return; }

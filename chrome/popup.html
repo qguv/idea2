@@ -87,7 +87,7 @@
       <a class="little sc button credentials">Log out</a>
     </div>
 
-    <input class="username float-right" placeholder="Username"/>
+    <input id="username" class="float-right" placeholder="Username"/>
 
     <div id="share-tabs" class="hidden top-button">
       <a class="little sc button share">Share tabs</a>
@@ -101,6 +101,12 @@
         <a class="little sc button rename">Rename</a>
         <a class="little sc button delete">Delete</a>
       </div>
+    </div>
+
+    <div class="hidden share-form">
+      <input id="target_user" placeholder="Destination user"/>
+      <input id="list_name" placeholder="List name"/>
+      <button type="button" class="float-right">Share</button>
     </div>
 
   </body>
